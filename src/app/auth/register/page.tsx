@@ -30,8 +30,8 @@ export default function RegisterPage() {
 
       const response = await authApi.register(data);
 
-      setToken(response.token);
-      setUser(response.user);
+      setToken(response.data.token);
+      setUser(response.data.user);
 
       router.push('/auth/verify-email');
     } catch (err: any) {
