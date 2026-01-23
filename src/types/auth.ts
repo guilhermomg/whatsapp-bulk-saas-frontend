@@ -29,7 +29,7 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string;
   password: string;
-  businessName?: string;
+  businessName: string;
 }
 
 export interface ForgotPasswordRequest {

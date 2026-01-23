@@ -83,7 +83,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="businessName" className="block text-sm font-medium text-gray-700">
-                Business Name (optional)
+                Business Name *
               </label>
               <input
                 {...register('businessName')}
