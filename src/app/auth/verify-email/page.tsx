@@ -95,9 +95,9 @@ function VerifyEmailContent() {
 
           {status === 'error' && (
             <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-amber-100">
                 <svg
-                  className="h-6 w-6 text-red-600"
+                  className="h-6 w-6 text-amber-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -106,7 +106,7 @@ function VerifyEmailContent() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
               </div>
@@ -123,10 +123,10 @@ function VerifyEmailContent() {
                   </button>
 
                   <Link
-                    href="/dashboard"
+                    href="/auth/login"
                     className="mt-3 block text-sm text-blue-600 hover:text-blue-500"
                   >
-                    Go to Dashboard
+                    Back to Login
                   </Link>
                 </div>
               )}
