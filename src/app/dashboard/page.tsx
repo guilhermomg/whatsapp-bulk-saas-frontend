@@ -2,11 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
+import { DashboardNav } from '@/components/DashboardNav';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading, logout } = useAuthStore();
+  const { user, isAuthenticated, isLoading } = useAuthStore();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -28,24 +30,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">WhatsApp Bulk SaaS</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">{user.email}</span>
-              <button
-                onClick={logout}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <DashboardNav />
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
@@ -94,18 +79,30 @@ export default function DashboardPage() {
               <div className="border rounded-lg p-4">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Quick Actions</h3>
                 <div className="space-y-2">
-                  <button className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium">
-                    Send Messages
-                  </button>
-                  <button className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium">
-                    Manage Contacts
-                  </button>
-                  <button className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium">
-                    View Templates
-                  </button>
-                  <button className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium">
-                    Campaign Analytics
-                  </button>
+                  <Link
+                    href="/dashboard/campaigns"
+                    className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
+                  >
+                    📧 Send Messages
+                  </Link>
+                  <Link
+                    href="/dashboard/contacts"
+                    className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
+                  >
+                    👥 Manage Contacts
+                  </Link>
+                  <Link
+                    href="/dashboard/templates"
+                    className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
+                  >
+                    📝 View Templates
+                  </Link>
+                  <Link
+                    href="/dashboard/analytics"
+                    className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
+                  >
+                    📊 Campaign Analytics
+                  </Link>
                 </div>
               </div>
             </div>
