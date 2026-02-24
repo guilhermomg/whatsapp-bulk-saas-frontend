@@ -50,7 +50,7 @@ export function DeleteContactModal({ isOpen, contact, onClose, onSuccess }: Dele
 
           <div className="rounded-md bg-yellow-50 p-4">
             <p className="text-sm text-yellow-800">
-              Are you sure you want to delete <strong>{contact.name || contact.phone}</strong>? 
+              Are you sure you want to delete <strong>{contact.name || contact.phone}</strong>?
               This action cannot be undone.
             </p>
           </div>

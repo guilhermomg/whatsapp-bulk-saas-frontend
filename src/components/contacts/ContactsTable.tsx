@@ -91,11 +91,10 @@ export function ContactsTable({
               <td className="px-6 py-4 text-sm text-gray-600">{contact.email || '-'}</td>
               <td className="px-6 py-4 text-sm">
                 <span
-                  className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                    contact.optedIn
+                  className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${contact.optedIn
                       ? 'bg-green-100 text-green-800'
                       : 'bg-gray-100 text-gray-800'
-                  }`}
+                    }`}
                 >
                   {contact.optedIn ? 'Opted In' : 'Opted Out'}
                 </span>

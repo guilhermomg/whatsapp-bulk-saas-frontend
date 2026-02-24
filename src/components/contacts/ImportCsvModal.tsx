@@ -40,7 +40,7 @@ export function ImportCsvModal({ isOpen, onClose, onSuccess }: ImportCsvModalPro
       const result = await contactsApi.importCsv(file);
 
       setSuccess(`Successfully imported ${result.imported} contact(s).`);
-      
+
       setTimeout(() => {
         onSuccess();
         onClose();
