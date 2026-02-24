@@ -23,41 +23,37 @@ export function DashboardNav({ title }: DashboardNavProps) {
             <div className="hidden md:flex space-x-6">
               <Link
                 href="/dashboard"
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${
-                  isActive('/dashboard')
+                className={`px-3 py-2 text-sm font-medium border-b-2 ${isActive('/dashboard')
                     ? 'text-gray-900 border-blue-600'
                     : 'text-gray-700 border-transparent hover:text-gray-900'
-                }`}
+                  }`}
               >
                 Dashboard
               </Link>
               <Link
                 href="/dashboard/contacts"
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${
-                  isActive('/dashboard/contacts')
+                className={`px-3 py-2 text-sm font-medium border-b-2 ${isActive('/dashboard/contacts')
                     ? 'text-gray-900 border-blue-600'
                     : 'text-gray-700 border-transparent hover:text-gray-900'
-                }`}
+                  }`}
               >
                 Contacts
               </Link>
               <Link
                 href="/dashboard/templates"
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${
-                  isActive('/dashboard/templates')
+                className={`px-3 py-2 text-sm font-medium border-b-2 ${isActive('/dashboard/templates')
                     ? 'text-gray-900 border-blue-600'
                     : 'text-gray-700 border-transparent hover:text-gray-900'
-                }`}
+                  }`}
               >
                 Templates
               </Link>
               <Link
                 href="/dashboard/campaigns"
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${
-                  isActive('/dashboard/campaigns')
+                className={`px-3 py-2 text-sm font-medium border-b-2 ${isActive('/dashboard/campaigns')
                     ? 'text-gray-900 border-blue-600'
                     : 'text-gray-700 border-transparent hover:text-gray-900'
-                }`}
+                  }`}
               >
                 Campaigns
               </Link>
