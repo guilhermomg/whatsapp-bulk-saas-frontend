@@ -25,7 +25,12 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    return null;
+    // Still resolving auth state – show spinner rather than blank screen
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   return (
