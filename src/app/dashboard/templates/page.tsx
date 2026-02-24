@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/stores/authStore';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Template, templatesApi } from '@/lib/api/templates';
 import { DashboardNav } from '@/components/DashboardNav';
 import { TemplateFormModal } from '@/components/templates/TemplateFormModal';
@@ -11,8 +10,7 @@ import { SubmitModal } from '@/components/templates/SubmitModal';
 import { DeleteModal } from '@/components/templates/DeleteModal';
 
 export default function TemplatesPage() {
-  const router = useRouter();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuthStore();
+  const { user, isInitialized } = useRequireAuth();
 
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,13 +30,6 @@ export default function TemplatesPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
 
   const ITEMS_PER_PAGE = 25;
-
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/auth/login');
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   // Fetch templates
   const fetchTemplates = async () => {
@@ -97,7 +88,13 @@ export default function TemplatesPage() {
 
   const totalPages = Math.ceil(totalTemplates / ITEMS_PER_PAGE);
 
-  if (authLoading) return null;
+  if (!isInitialized || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -240,8 +237,8 @@ export default function TemplatesPage() {
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     className={`px-3 py-2 rounded-lg ${currentPage === page
-                        ? 'bg-blue-600 text-white'
-                        : 'border border-gray-300 hover:bg-gray-50'
+                      ? 'bg-blue-600 text-white'
+                      : 'border border-gray-300 hover:bg-gray-50'
                       }`}
                   >
                     {page}

@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/stores/authStore';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Contact, contactsApi } from '@/lib/api/contacts';
 import { AddContactModal } from '@/components/contacts/AddContactModal';
 import { EditContactModal } from '@/components/contacts/EditContactModal';
@@ -13,8 +12,7 @@ import { ContactsTable } from '@/components/contacts/ContactsTable';
 import { DashboardNav } from '@/components/DashboardNav';
 
 export default function ContactsPage() {
-  const router = useRouter();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuthStore();
+  const { user, isInitialized } = useRequireAuth();
 
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,13 +34,6 @@ export default function ContactsPage() {
   const [totalContacts, setTotalContacts] = useState(0);
 
   const ITEMS_PER_PAGE = 25;
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/auth/login');
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   // Fetch contacts
   const fetchContacts = async () => {
@@ -106,16 +97,12 @@ export default function ContactsPage() {
 
   const totalPages = Math.ceil(totalContacts / ITEMS_PER_PAGE);
 
-  if (authLoading) {
+  if (!isInitialized || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (
