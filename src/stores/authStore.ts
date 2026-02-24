@@ -8,6 +8,7 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isInitialized: boolean;
   setUser: (user: User | null) => void;
   setToken: (token: string) => void;
   removeToken: () => void;
@@ -20,7 +21,8 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      isLoading: true,
+      isLoading: false,
+      isInitialized: false,
 
       setUser: (user) =>
         set({
@@ -43,25 +45,27 @@ export const useAuthStore = create<AuthState>()(
       },
 
       fetchUser: async () => {
+        set({ isLoading: true });
         try {
           const token = Cookies.get('token');
           if (!token) {
-            set({ user: null, isAuthenticated: false, isLoading: false });
+            set({ user: null, isAuthenticated: false });
             return;
           }
 
           const { user } = await authApi.getCurrentUser();
-          set({ user, isAuthenticated: true, isLoading: false });
+          set({ user, isAuthenticated: true });
         } catch (error) {
           Cookies.remove('token');
-          set({ user: null, isAuthenticated: false, isLoading: false });
+          set({ user: null, isAuthenticated: false });
+        } finally {
+          set({ isLoading: false, isInitialized: true });
         }
       },
     }),
     {
       name: 'auth-storage',
       partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
-      skipHydration: true,
     }
   )
 );

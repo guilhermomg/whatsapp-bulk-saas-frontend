@@ -20,8 +20,8 @@ export const authApi = {
   },
 
   getCurrentUser: async (): Promise<{ user: User }> => {
-    const response = await apiClient.get<{ user: User }>('/auth/me');
-    return response.data;
+    const response = await apiClient.get<{ success: boolean; data: { user: User } }>('/auth/me');
+    return response.data.data;
   },
 
   verifyEmail: async (token: string): Promise<{ message: string }> => {
