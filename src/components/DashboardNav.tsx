@@ -4,11 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 
-interface DashboardNavProps {
-  title?: string;
-}
-
-export function DashboardNav({ title }: DashboardNavProps) {
+export function DashboardNav() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
 
@@ -56,6 +52,15 @@ export function DashboardNav({ title }: DashboardNavProps) {
                   }`}
               >
                 Campaigns
+              </Link>
+              <Link
+                href="/dashboard/settings"
+                className={`px-3 py-2 text-sm font-medium border-b-2 ${isActive('/dashboard/settings')
+                    ? 'text-gray-900 border-blue-600'
+                    : 'text-gray-700 border-transparent hover:text-gray-900'
+                  }`}
+              >
+                Settings
               </Link>
             </div>
           </div>

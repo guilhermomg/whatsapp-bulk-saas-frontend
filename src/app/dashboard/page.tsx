@@ -1,11 +1,21 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { DashboardNav } from '@/components/DashboardNav';
+import { whatsappApi } from '@/lib/api/whatsapp';
 
 export default function DashboardPage() {
   const { user, isLoading, isInitialized } = useRequireAuth();
+  const [whatsappConnected, setWhatsappConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    whatsappApi.getStatus()
+      .then((res) => setWhatsappConnected(res.data.connected))
+      .catch(() => setWhatsappConnected(false));
+  }, [user]);
 
   if (!isInitialized || isLoading) {
     return (
@@ -16,7 +26,6 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    // Still resolving auth state – show spinner rather than blank screen
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -34,10 +43,24 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to your Dashboard!</h2>
 
             {!user.emailVerified && (
-              <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-md p-4">
+              <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-md p-4">
                 <p className="text-sm text-yellow-800">
-                  ⚠️ Your email is not verified. Please check your inbox and verify your email to unlock all features.
+                  Your email is not verified. Please check your inbox and verify your email to unlock all features.
                 </p>
+              </div>
+            )}
+
+            {user.emailVerified && whatsappConnected === false && (
+              <div className="mb-4 bg-blue-50 border border-blue-200 rounded-md p-4 flex items-center justify-between">
+                <p className="text-sm text-blue-800">
+                  Connect your WhatsApp Business Account to start sending campaigns.
+                </p>
+                <Link
+                  href="/dashboard/settings"
+                  className="ml-4 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 whitespace-nowrap"
+                >
+                  Connect Now
+                </Link>
               </div>
             )}
 
@@ -79,25 +102,25 @@ export default function DashboardPage() {
                     href="/dashboard/campaigns"
                     className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
                   >
-                    📧 Send Messages
+                    Send Messages
                   </Link>
                   <Link
                     href="/dashboard/contacts"
                     className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
                   >
-                    👥 Manage Contacts
+                    Manage Contacts
                   </Link>
                   <Link
                     href="/dashboard/templates"
                     className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
                   >
-                    📝 View Templates
+                    View Templates
                   </Link>
                   <Link
-                    href="/dashboard/analytics"
+                    href="/dashboard/settings"
                     className="block w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 text-sm font-medium"
                   >
-                    📊 Campaign Analytics
+                    Settings
                   </Link>
                 </div>
               </div>

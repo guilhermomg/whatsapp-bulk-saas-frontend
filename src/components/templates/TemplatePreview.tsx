@@ -3,15 +3,23 @@ import { Template } from '@/lib/api/templates';
 interface TemplatePreviewProps {
   template: Template;
   preview?: {
-    header?: string;
-    body: string;
-    footer?: string;
+    header?: string | { type?: string; text?: string; url?: string };
+    body: string | { text: string; variables?: string[] };
+    footer?: string | { text?: string };
     buttons?: Array<{ type: string; text: string }>;
   };
 }
 
 export function TemplatePreview({ template, preview }: TemplatePreviewProps) {
   const displayData = preview || template.components;
+
+  if (!displayData) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <p className="text-sm text-gray-400 text-center">Fill in the form to see a preview</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
