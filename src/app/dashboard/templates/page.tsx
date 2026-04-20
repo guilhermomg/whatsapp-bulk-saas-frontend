@@ -215,8 +215,12 @@ export default function TemplatesPage() {
           templates={templates}
           loading={loading}
           onEdit={handleEditTemplate}
+          onSubmit={handleSubmitTemplate}
           onDelete={handleDeleteTemplate}
-          onViewDetails={handleSubmitTemplate}
+          onViewDetails={(template) => {
+            // For rejected templates, show details
+            alert(`Rejection reason: ${template.rejectionReason || 'No reason provided'}`);
+          }}
         />
 
         {/* Pagination */}

@@ -8,6 +8,7 @@ interface TemplatesTableProps {
   loading?: boolean;
   onEdit?: (template: Template) => void;
   onDelete?: (template: Template) => void;
+  onSubmit?: (template: Template) => void;
   onViewDetails?: (template: Template) => void;
 }
 
@@ -16,6 +17,7 @@ export function TemplatesTable({
   loading = false,
   onEdit,
   onDelete,
+  onSubmit,
   onViewDetails,
 }: TemplatesTableProps) {
   if (loading) {
@@ -84,26 +86,40 @@ export function TemplatesTable({
               </td>
               <td className="px-6 py-4 text-right space-x-2">
                 {template.status === 'draft' && (
-                  <button
-                    onClick={() => onEdit?.(template)}
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      onClick={() => onEdit?.(template)}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => onSubmit?.(template)}
+                      className="text-green-600 hover:text-green-700 text-sm font-medium"
+                    >
+                      Submit
+                    </button>
+                    <button
+                      onClick={() => onDelete?.(template)}
+                      className="text-red-600 hover:text-red-700 text-sm font-medium"
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
-                {template.status === 'draft' && (
-                  <button
-                    onClick={() => onDelete?.(template)}
-                    className="text-red-600 hover:text-red-700 text-sm font-medium"
-                  >
-                    Delete
-                  </button>
+                {template.status === 'pending' && (
+                  <span className="text-sm text-yellow-600">⏳ Awaiting approval</span>
                 )}
                 {template.status === 'approved' && (
-                  <span className="text-sm text-gray-600">Ready to use</span>
+                  <span className="text-sm text-green-600">✓ Ready to use</span>
                 )}
                 {template.status === 'rejected' && (
-                  <span className="text-sm text-gray-600">View details</span>
+                  <button
+                    onClick={() => onViewDetails?.(template)}
+                    className="text-red-600 hover:text-red-700 text-sm font-medium"
+                  >
+                    View reason
+                  </button>
                 )}
               </td>
             </tr>

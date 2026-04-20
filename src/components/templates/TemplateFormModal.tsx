@@ -54,10 +54,29 @@ export function TemplateFormModal({
       setLoading(true);
       setError('');
 
+      // Clean components: strip empty optional fields and inject header type
+      const components: CreateTemplateInput['components'] = {
+        body: data.components.body,
+      };
+
+      if (data.components.header?.text?.trim()) {
+        components.header = { type: 'text', text: data.components.header.text.trim() };
+      }
+
+      if (data.components.footer?.text?.trim()) {
+        components.footer = { text: data.components.footer.text.trim() };
+      }
+
+      if (data.components.buttons && data.components.buttons.length > 0) {
+        components.buttons = data.components.buttons;
+      }
+
+      const payload = { ...data, components };
+
       if (template) {
-        await templatesApi.update(template.id, data);
+        await templatesApi.update(template.id, payload);
       } else {
-        await templatesApi.create(data);
+        await templatesApi.create(payload);
       }
 
       reset();
@@ -101,7 +120,7 @@ export function TemplateFormModal({
                 <input
                   {...register('name')}
                   placeholder="e.g., order_confirmation"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 text-gray-900"
                   disabled={loading || !!template}
                 />
                 {errors.name && (
@@ -116,7 +135,7 @@ export function TemplateFormModal({
                 </label>
                 <select
                   {...register('category')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                 >
                   <option value="marketing">Marketing</option>
                   <option value="utility">Utility</option>
@@ -133,8 +152,8 @@ export function TemplateFormModal({
                   Language
                 </label>
                 <select
-                  {...register('components.body')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  {...register('language')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                 >
                   <option value="en_US">English (US)</option>
                   <option value="es_ES">Spanish</option>
@@ -151,7 +170,7 @@ export function TemplateFormModal({
                   <input
                     {...register('components.header.text')}
                     placeholder="e.g., Order Status"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -161,13 +180,13 @@ export function TemplateFormModal({
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">Body *</h3>
                 <div>
                   <label className="text-xs text-gray-600 mb-1 block">
-                    Text (use double curly braces for variables: {'[[1]]'} where 1 is the variable number)
+                    Text (use double curly braces for variables: {'{{1}}'} where 1 is the variable number)
                   </label>
                   <textarea
                     {...register('components.body.text')}
                     placeholder="e.g., Order {{1}} confirmed&#10;Total: {{2}}"
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm text-gray-900"
                   />
                   {errors.components?.body?.text && (
                     <p className="text-red-500 text-sm mt-1">
@@ -190,7 +209,7 @@ export function TemplateFormModal({
                   <input
                     {...register('components.footer.text')}
                     placeholder="e.g., Thank you!"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -218,7 +237,7 @@ export function TemplateFormModal({
 
             {/* Right: Preview */}
             <div>
-              <TemplatePreview template={template || ({} as any)} />
+              <TemplatePreview template={template || ({} as any)} preview={components} />
             </div>
           </div>
 
