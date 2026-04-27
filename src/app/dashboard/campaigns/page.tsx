@@ -79,17 +79,12 @@ export default function CampaignsPage() {
     setSelectedContactIds([]);
     setContactSearch('');
     setShowCreateModal(true);
-    try {
-      const [tmplRes, contactRes] = await Promise.all([
-        templatesApi.list({ limit: 100 }),
-        contactsApi.list({ limit: 200 }),
-      ]);
-      setTemplates(tmplRes.data.filter(t => t.status === 'draft' || t.status === 'approved'));
-      setContacts(contactRes.data);
-    } catch {
-      setTemplates([]);
-      setContacts([]);
-    }
+    templatesApi.list({ limit: 100 })
+      .then(res => setTemplates(res.data.filter(t => t.status === 'draft' || t.status === 'approved')))
+      .catch(() => setTemplates([]));
+    contactsApi.list({ limit: 200 })
+      .then(res => setContacts(res.data))
+      .catch(() => setContacts([]));
   };
 
   const handleCreate = async () => {
@@ -398,15 +393,15 @@ export default function CampaignsPage() {
                   className="mb-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
                 <div className="border border-gray-200 rounded-md overflow-y-auto max-h-44">
-                  {contacts.length === 0 ? (
-                    <p className="text-sm text-gray-500 text-center py-4">No contacts found</p>
-                  ) : (
-                    contacts
-                      .filter(c => {
-                        const q = contactSearch.toLowerCase();
-                        return !q || c.phone.includes(q) || (c.name ?? '').toLowerCase().includes(q);
-                      })
-                      .map(c => (
+                  {(() => {
+                    const filtered = contacts.filter(c => {
+                      const q = contactSearch.toLowerCase();
+                      return !q || c.phone.includes(q) || (c.name ?? '').toLowerCase().includes(q);
+                    });
+                    if (filtered.length === 0) {
+                      return <p className="text-sm text-gray-500 text-center py-4">No contacts found</p>;
+                    }
+                    return filtered.map(c => (
                         <label
                           key={c.id}
                           className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer"
@@ -427,8 +422,8 @@ export default function CampaignsPage() {
                             {c.name ? `${c.name} ` : ''}<span className="text-gray-500">{c.phone}</span>
                           </span>
                         </label>
-                      ))
-                  )}
+                    ));
+                  })()}
                 </div>
                 {selectedContactIds.length === 0 && contacts.length > 0 && (
                   <p className="text-xs text-gray-400 mt-1">
