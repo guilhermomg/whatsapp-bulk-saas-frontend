@@ -82,10 +82,10 @@ export default function CampaignsPage() {
     try {
       const [tmplRes, contactRes] = await Promise.all([
         templatesApi.list({ limit: 100 }),
-        contactsApi.list({ limit: 200, optedIn: true }),
+        contactsApi.list({ limit: 200 }),
       ]);
       setTemplates(tmplRes.data.filter(t => t.status === 'draft' || t.status === 'approved'));
-      setContacts(contactRes.data.filter(c => !c.isBlocked));
+      setContacts(contactRes.data);
     } catch {
       setTemplates([]);
       setContacts([]);
