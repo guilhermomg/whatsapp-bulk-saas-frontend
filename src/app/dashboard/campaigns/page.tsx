@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Campaign, campaignsApi } from '@/lib/api/campaigns';
 import { Template, templatesApi } from '@/lib/api/templates';
+import { Contact, contactsApi } from '@/lib/api/contacts';
 import { DashboardNav } from '@/components/DashboardNav';
 
 const STATUS_COLORS: Record<Campaign['status'], string> = {
@@ -38,12 +39,14 @@ export default function CampaignsPage() {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [formName, setFormName] = useState('');
   const [formTemplateId, setFormTemplateId] = useState('');
-  const [formTags, setFormTags] = useState('');
   const [formScheduledAt, setFormScheduledAt] = useState('');
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
+  const [contactSearch, setContactSearch] = useState('');
 
   const fetchCampaigns = async () => {
     if (!user) return;
@@ -71,15 +74,21 @@ export default function CampaignsPage() {
   const openCreateModal = async () => {
     setFormName('');
     setFormTemplateId('');
-    setFormTags('');
     setFormScheduledAt('');
     setFormError('');
+    setSelectedContactIds([]);
+    setContactSearch('');
     setShowCreateModal(true);
     try {
-      const res = await templatesApi.list({ limit: 100 });
-      setTemplates(res.data.filter(t => t.status === 'draft' || t.status === 'approved'));
+      const [tmplRes, contactRes] = await Promise.all([
+        templatesApi.list({ limit: 100 }),
+        contactsApi.list({ limit: 200, optedIn: true }),
+      ]);
+      setTemplates(tmplRes.data.filter(t => t.status === 'draft' || t.status === 'approved'));
+      setContacts(contactRes.data.filter(c => !c.isBlocked));
     } catch {
       setTemplates([]);
+      setContacts([]);
     }
   };
 
@@ -95,14 +104,10 @@ export default function CampaignsPage() {
     setFormError('');
     setIsSubmitting(true);
     try {
-      const tags = formTags
-        .split(',')
-        .map(t => t.trim())
-        .filter(Boolean);
       await campaignsApi.create({
         name: formName.trim(),
         templateId: formTemplateId,
-        contactFilter: tags.length > 0 ? { tags } : undefined,
+        contactIds: selectedContactIds.length > 0 ? selectedContactIds : undefined,
         scheduledAt: formScheduledAt || undefined,
       });
       setShowCreateModal(false);
@@ -315,7 +320,7 @@ export default function CampaignsPage() {
 
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">New Campaign</h3>
 
             {formError && (
@@ -334,7 +339,7 @@ export default function CampaignsPage() {
                   value={formName}
                   onChange={e => setFormName(e.target.value)}
                   placeholder="Campaign name"
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
 
@@ -345,7 +350,7 @@ export default function CampaignsPage() {
                 <select
                   value={formTemplateId}
                   onChange={e => setFormTemplateId(e.target.value)}
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
                   <option value="">Select a template</option>
                   {templates.map(t => (
@@ -357,16 +362,79 @@ export default function CampaignsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Filter by Tags (optional, comma-separated)
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Recipients{' '}
+                    <span className="text-gray-400 font-normal">
+                      ({selectedContactIds.length === 0
+                        ? 'all opted-in contacts'
+                        : `${selectedContactIds.length} selected`})
+                    </span>
+                  </label>
+                  <div className="flex gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedContactIds(contacts.map(c => c.id))}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Select all
+                    </button>
+                    {selectedContactIds.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedContactIds([])}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
                 <input
                   type="text"
-                  value={formTags}
-                  onChange={e => setFormTags(e.target.value)}
-                  placeholder="vip, newsletter"
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  value={contactSearch}
+                  onChange={e => setContactSearch(e.target.value)}
+                  placeholder="Search by name or phone..."
+                  className="mb-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
+                <div className="border border-gray-200 rounded-md overflow-y-auto max-h-44">
+                  {contacts.length === 0 ? (
+                    <p className="text-sm text-gray-500 text-center py-4">No opted-in contacts found</p>
+                  ) : (
+                    contacts
+                      .filter(c => {
+                        const q = contactSearch.toLowerCase();
+                        return !q || c.phone.includes(q) || (c.name ?? '').toLowerCase().includes(q);
+                      })
+                      .map(c => (
+                        <label
+                          key={c.id}
+                          className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedContactIds.includes(c.id)}
+                            onChange={e => {
+                              setSelectedContactIds(prev =>
+                                e.target.checked
+                                  ? [...prev, c.id]
+                                  : prev.filter(id => id !== c.id),
+                              );
+                            }}
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                          />
+                          <span className="text-sm text-gray-900 truncate">
+                            {c.name ? `${c.name} ` : ''}<span className="text-gray-500">{c.phone}</span>
+                          </span>
+                        </label>
+                      ))
+                  )}
+                </div>
+                {selectedContactIds.length === 0 && contacts.length > 0 && (
+                  <p className="text-xs text-gray-400 mt-1">
+                    No contacts selected — campaign will send to all opted-in contacts.
+                  </p>
+                )}
               </div>
 
               <div>
@@ -377,7 +445,7 @@ export default function CampaignsPage() {
                   type="datetime-local"
                   value={formScheduledAt}
                   onChange={e => setFormScheduledAt(e.target.value)}
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
             </div>

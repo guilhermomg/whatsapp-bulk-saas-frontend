@@ -7,7 +7,7 @@ export interface Campaign {
   name: string;
   status: 'draft' | 'scheduled' | 'processing' | 'completed' | 'failed' | 'paused';
   messageType: string;
-  messageContent: { contactFilter?: { tags?: string[] } };
+  messageContent: { contactFilter?: { tags?: string[] }; contactIds?: string[] };
   totalRecipients: number;
   sentCount: number;
   deliveredCount: number;
@@ -67,6 +67,7 @@ export const campaignsApi = {
     name: string;
     templateId: string;
     contactFilter?: { tags?: string[] };
+    contactIds?: string[];
     scheduledAt?: string;
   }): Promise<CampaignResponse> => {
     const response = await apiClient.post<CampaignResponse>('/campaigns', data);
