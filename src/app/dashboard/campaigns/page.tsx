@@ -82,7 +82,7 @@ export default function CampaignsPage() {
     templatesApi.list({ limit: 100 })
       .then(res => setTemplates(res.data.filter(t => t.status === 'draft' || t.status === 'approved')))
       .catch(() => setTemplates([]));
-    contactsApi.list({ limit: 200 })
+    contactsApi.list({ limit: 100 })
       .then(res => setContacts(res.data))
       .catch(() => setContacts([]));
   };
