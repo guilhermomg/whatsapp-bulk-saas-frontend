@@ -367,7 +367,7 @@ export default function CampaignsPage() {
                     Recipients{' '}
                     <span className="text-gray-400 font-normal">
                       ({selectedContactIds.length === 0
-                        ? 'all opted-in contacts'
+                        ? 'all contacts'
                         : `${selectedContactIds.length} selected`})
                     </span>
                   </label>
@@ -399,7 +399,7 @@ export default function CampaignsPage() {
                 />
                 <div className="border border-gray-200 rounded-md overflow-y-auto max-h-44">
                   {contacts.length === 0 ? (
-                    <p className="text-sm text-gray-500 text-center py-4">No opted-in contacts found</p>
+                    <p className="text-sm text-gray-500 text-center py-4">No contacts found</p>
                   ) : (
                     contacts
                       .filter(c => {
@@ -432,7 +432,7 @@ export default function CampaignsPage() {
                 </div>
                 {selectedContactIds.length === 0 && contacts.length > 0 && (
                   <p className="text-xs text-gray-400 mt-1">
-                    No contacts selected — campaign will send to all opted-in contacts.
+                    No contacts selected — campaign will send to all contacts.
                   </p>
                 )}
               </div>
