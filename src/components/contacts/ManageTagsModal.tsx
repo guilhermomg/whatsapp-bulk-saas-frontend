@@ -39,7 +39,7 @@ export function ManageTagsModal({ isOpen, contact, onClose, onSuccess }: ManageT
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update tags');
+      setError(err.response?.data?.error || 'Failed to update tags');
     } finally {
       setIsLoading(false);
     }

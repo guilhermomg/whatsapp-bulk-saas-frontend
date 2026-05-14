@@ -53,7 +53,7 @@ export default function ContactsPage() {
       setContacts(response.data);
       setTotalContacts(response.pagination.total);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch contacts');
+      setError(err.response?.data?.error || 'Failed to fetch contacts');
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +91,7 @@ export default function ContactsPage() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to export contacts');
+      setError(err.response?.data?.error || 'Failed to export contacts');
     }
   };
 

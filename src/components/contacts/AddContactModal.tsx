@@ -47,7 +47,7 @@ export function AddContactModal({ isOpen, onClose, onSuccess }: AddContactModalP
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create contact');
+      setError(err.response?.data?.error || 'Failed to create contact');
     } finally {
       setIsLoading(false);
     }

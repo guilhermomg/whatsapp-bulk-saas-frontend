@@ -50,7 +50,7 @@ export default function TemplatesPage() {
       setTemplates(response.data);
       setTotalTemplates(response.pagination.total);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch templates');
+      setError(err.response?.data?.error || 'Failed to fetch templates');
     } finally {
       setLoading(false);
     }

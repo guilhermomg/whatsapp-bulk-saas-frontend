@@ -39,7 +39,7 @@ export default function LoginPage() {
         router.push('/dashboard');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred during login');
+      setError(err.response?.data?.error || 'An error occurred during login');
     } finally {
       setIsLoading(false);
     }

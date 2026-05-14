@@ -28,7 +28,7 @@ export default function ForgotPasswordPage() {
       await authApi.forgotPassword(data);
       setSuccess(true);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred');
+      setError(err.response?.data?.error || 'An error occurred');
     } finally {
       setIsLoading(false);
     }

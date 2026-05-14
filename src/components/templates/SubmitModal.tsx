@@ -42,7 +42,7 @@ export function SubmitModal({ isOpen, onClose, onSuccess, template }: SubmitModa
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to submit template');
+      setError(err.response?.data?.error || 'Failed to submit template');
     } finally {
       setLoading(false);
     }

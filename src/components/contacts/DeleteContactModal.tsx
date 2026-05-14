@@ -26,7 +26,7 @@ export function DeleteContactModal({ isOpen, contact, onClose, onSuccess }: Dele
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete contact');
+      setError(err.response?.data?.error || 'Failed to delete contact');
     } finally {
       setIsLoading(false);
     }

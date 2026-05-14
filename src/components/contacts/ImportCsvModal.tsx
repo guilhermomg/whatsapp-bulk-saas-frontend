@@ -47,7 +47,7 @@ export function ImportCsvModal({ isOpen, onClose, onSuccess }: ImportCsvModalPro
         setFileName('');
       }, 1500);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to import CSV');
+      setError(err.response?.data?.error || 'Failed to import CSV');
     } finally {
       setIsLoading(false);
     }

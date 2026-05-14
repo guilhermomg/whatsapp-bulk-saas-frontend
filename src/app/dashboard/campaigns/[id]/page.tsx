@@ -47,7 +47,7 @@ export default function CampaignDetailPage() {
       setStats(res.data.stats);
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
-      setError(e.response?.data?.message || 'Failed to load campaign');
+      setError(e.response?.data?.error || 'Failed to load campaign');
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +75,7 @@ export default function CampaignDetailPage() {
       setCampaign(res.data);
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
-      setActionError(e.response?.data?.message || `Failed to ${action} campaign`);
+      setActionError(e.response?.data?.error || `Failed to ${action} campaign`);
     }
   };
 

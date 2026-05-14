@@ -80,6 +80,7 @@ export const campaignsApi = {
       name?: string;
       templateId?: string;
       contactFilter?: { tags?: string[] };
+      contactIds?: string[];
       scheduledAt?: string;
     },
   ): Promise<CampaignResponse> => {

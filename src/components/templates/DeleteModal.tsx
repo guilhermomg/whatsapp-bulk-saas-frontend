@@ -26,7 +26,7 @@ export function DeleteModal({ isOpen, onClose, onSuccess, template }: DeleteModa
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete template');
+      setError(err.response?.data?.error || 'Failed to delete template');
     } finally {
       setLoading(false);
     }

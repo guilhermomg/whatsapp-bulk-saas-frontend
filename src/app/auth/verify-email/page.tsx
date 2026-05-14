@@ -38,7 +38,7 @@ function VerifyEmailContent() {
       }, 2000);
     } catch (err: any) {
       setStatus('error');
-      setMessage(err.response?.data?.message || 'Verification failed');
+      setMessage(err.response?.data?.error || 'Verification failed');
     }
   };
 
@@ -48,7 +48,7 @@ function VerifyEmailContent() {
       const response = await authApi.resendVerification();
       setMessage(response.message);
     } catch (err: any) {
-      setMessage(err.response?.data?.message || 'Failed to resend verification email');
+      setMessage(err.response?.data?.error || 'Failed to resend verification email');
     } finally {
       setIsResending(false);
     }

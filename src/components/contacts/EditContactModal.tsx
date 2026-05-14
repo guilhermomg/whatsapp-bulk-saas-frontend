@@ -59,7 +59,7 @@ export function EditContactModal({ isOpen, contact, onClose, onSuccess }: EditCo
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update contact');
+      setError(err.response?.data?.error || 'Failed to update contact');
     } finally {
       setIsLoading(false);
     }

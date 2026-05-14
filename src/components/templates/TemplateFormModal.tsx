@@ -83,7 +83,7 @@ export function TemplateFormModal({
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save template');
+      setError(err.response?.data?.error || 'Failed to save template');
     } finally {
       setLoading(false);
     }

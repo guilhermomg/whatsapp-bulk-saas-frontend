@@ -56,7 +56,7 @@ function ConnectModal({
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to connect WhatsApp account');
+      setError(err.response?.data?.error || 'Failed to connect WhatsApp account');
     } finally {
       setIsLoading(false);
     }
@@ -218,7 +218,7 @@ export default function SettingsPage() {
       const res = await whatsappApi.getStatus();
       setStatus(res.data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load WhatsApp status');
+      setError(err.response?.data?.error || 'Failed to load WhatsApp status');
     } finally {
       setIsLoadingStatus(false);
     }
@@ -238,7 +238,7 @@ export default function SettingsPage() {
       setSuccessMessage('WhatsApp account disconnected successfully.');
       await fetchStatus();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to disconnect');
+      setError(err.response?.data?.error || 'Failed to disconnect');
       setShowDisconnectModal(false);
     } finally {
       setIsDisconnecting(false);
